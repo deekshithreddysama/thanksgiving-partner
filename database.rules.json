@@ -2,9 +2,9 @@
   "rules": {
     "pairs": {
       ".read": true,
-      ".write": true,
+      ".write": "(!data.child('Sanny').exists() || newData.child('Sanny').val() == data.child('Sanny').val()) && (!data.child('Rishi').exists() || newData.child('Rishi').val() == data.child('Rishi').val()) && (!data.child('Vamshi').exists() || newData.child('Vamshi').val() == data.child('Vamshi').val()) && (!data.child('Ramya').exists() || newData.child('Ramya').val() == data.child('Ramya').val()) && (!data.child('Siri').exists() || newData.child('Siri').val() == data.child('Siri').val()) && (!data.child('Sama').exists() || newData.child('Sama').val() == data.child('Sama').val())",
       "$name": {
-        ".validate": "$name.matches(/^(Sunny|Rishi|Vamshi|Ramya|Siri|Sama)$/) && newData.isString() && newData.val().matches(/^(Sunny|Rishi|Vamshi|Ramya|Siri|Sama)$/) && (!data.exists() || data.val() == newData.val())"
+        ".validate": "$name.matches(/^(Sanny|Rishi|Vamshi|Ramya|Siri|Sama)$/) && newData.isString() && newData.val().matches(/^(Sanny|Rishi|Vamshi|Ramya|Siri|Sama)$/)"
       }
     }
   }
