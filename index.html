@@ -19,6 +19,14 @@ button:disabled{opacity:.5;cursor:default}
 #result{margin-top:20px}
 .pick{font-size:2.4rem;font-weight:700;color:var(--pine);line-height:1.1;margin:4px 0 8px}
 .err{color:var(--accent)}
+.board{margin-top:24px;border-top:1px solid var(--line);padding-top:16px}
+.board h2{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:600}
+.board ul{list-style:none;margin:0 0 16px;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.board li{border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:.9rem}
+.board li.done{background:var(--pine);border-color:var(--pine);color:var(--card)}
+.board ol{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.board ol li{border:0;padding:0;border-radius:0;font-size:1rem}
+.muted{color:var(--muted)}
 </style></head><body>
 <main><div class="card">
 <h1>Thanksgiving Partner</h1>
@@ -27,10 +35,16 @@ button:disabled{opacity:.5;cursor:default}
 <input id="n" autocomplete="off" placeholder="For example, Sama">
 <button id="go" type="submit">Reveal my partner</button></form>
 <div id="result" aria-live="polite"></div>
+<section class="board">
+<h2>Players</h2>
+<ul id="players"></ul>
+<h2>Assigned partners</h2>
+<ol id="assigned"><li class="muted">Loading...</li></ol>
+</section>
 </div></main>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, runTransaction, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBlQpJt1zxfBjf7k2QDR0ZRMdv5WfXZktw",
@@ -55,6 +69,38 @@ function canPair(left) {
 const db = getDatabase(initializeApp(firebaseConfig));
 const res = document.getElementById("result");
 const btn = document.getElementById("go");
+
+// Live list of players and the pairs already assigned.
+onValue(ref(db, "pairs"), snap => {
+  const cur = snap.val() || {};
+  const ul = document.getElementById("players");
+  ul.textContent = "";
+  PLAYERS.forEach(p => {
+    const li = document.createElement("li");
+    li.textContent = p;
+    if (cur[p]) li.className = "done";
+    ul.appendChild(li);
+  });
+  const ol = document.getElementById("assigned");
+  ol.textContent = "";
+  const shown = new Set();
+  PLAYERS.forEach(p => {
+    if (!cur[p] || shown.has(p)) return;
+    shown.add(p); shown.add(cur[p]);
+    const li = document.createElement("li");
+    li.textContent = p + " and " + cur[p];
+    ol.appendChild(li);
+  });
+  if (!ol.children.length) {
+    const li = document.createElement("li");
+    li.className = "muted";
+    li.textContent = "No partners assigned yet.";
+    ol.appendChild(li);
+  }
+}, () => {
+  const ol = document.getElementById("assigned");
+  ol.innerHTML = '<li class="err">The list could not load.</li>';
+});
 
 function err(msg) { res.innerHTML = '<p class="err"></p>'; res.firstChild.textContent = msg; }
 
