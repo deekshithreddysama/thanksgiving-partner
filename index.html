@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Secret Santa Pairs</title>
+<style>
+:root{--bg:#f3efe6;--card:#fff;--fg:#1d2a24;--muted:#5b6b62;--accent:#b3261e;--accent-fg:#fff;--pine:#165b33;--line:#d9d3c3}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1f17;--card:#18291f;--fg:#eef3ee;--muted:#9db0a4;--accent:#e0554b;--accent-fg:#16100f;--pine:#7ad39a;--line:#2b4033;color-scheme:dark}}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif;padding:24px 16px;box-sizing:border-box;display:flex;align-items:center;justify-content:center}
+main{width:100%;max-width:400px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:28px 24px}
+h1{font-size:1.75rem;margin:0 0 8px}
+p{margin:0 0 16px;color:var(--muted)}
+label{display:block;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+input,button{font:inherit;width:100%;box-sizing:border-box;border-radius:8px;padding:12px 14px}
+input{border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+button{margin-top:12px;border:0;background:var(--accent);color:var(--accent-fg);font-weight:600;cursor:pointer}
+#result{margin-top:20px}
+.pick{font-size:2.4rem;font-weight:700;color:var(--pine);line-height:1.1;margin:4px 0 8px}
+.err{color:var(--accent)}
+</style></head><body>
+<main><div class="card">
+<h1>Secret Santa</h1>
+<p>Enter your name to see your pair. You give a gift to your pair, and your pair gives a gift to you.</p>
+<form id="f"><label for="n">Your name</label>
+<input id="n" autocomplete="off" placeholder="For example, Sama">
+<button type="submit">Reveal my pair</button></form>
+<div id="result" aria-live="polite"></div>
+</div></main>
+<script>
+var D=JSON.parse(atob("eyJTaXJpIjoiUmlzaGkiLCJSaXNoaSI6IlNpcmkiLCJSYW15YSI6IlN1bm55IiwiU3VubnkiOiJSYW15YSIsIlZhbXNoaSI6IlNhbWEiLCJTYW1hIjoiVmFtc2hpIn0="));
+document.getElementById("f").onsubmit=function(e){
+  e.preventDefault();
+  var r=document.getElementById("result");
+  var q=document.getElementById("n").value.trim().toLowerCase();
+  var me=Object.keys(D).find(function(k){return k.toLowerCase()===q;});
+  if(!me){r.innerHTML="<p class=\"err\">Name not found. Check the spelling.</p>";return;}
+  r.innerHTML="Hi "+me+".<br>Your Secret Santa pair is:<div class=\"pick\"></div><p>Keep it secret.</p>";
+  r.querySelector(".pick").textContent=D[me];
+};
+</script></body></html>
