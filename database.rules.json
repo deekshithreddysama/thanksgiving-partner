@@ -1,0 +1,11 @@
+{
+  "rules": {
+    "pairs": {
+      ".read": true,
+      ".write": true,
+      "$name": {
+        ".validate": "$name.matches(/^(Sunny|Rishi|Vamshi|Ramya|Siri|Sama)$/) && newData.isString() && newData.val().matches(/^(Sunny|Rishi|Vamshi|Ramya|Siri|Sama)$/) && (!data.exists() || data.val() == newData.val())"
+      }
+    }
+  }
+}
